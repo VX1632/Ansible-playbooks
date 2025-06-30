@@ -1,0 +1,32 @@
+# Ansible vault files or secrets
+*.vault.yml
+*.secret.yml
+*.enc
+*.key
+
+# SSH keys
+*.pem
+*.key
+.ssh/
+
+# Inventory files you want private
+inventory/*.ini
+inventory/*.yaml
+inventory/*.yml
+
+# Logs / temporary files
+*.log
+*.retry
+*.tmp
+*.bak
+*.swp
+
+# Other common ignores
+*.tar.gz
+*.zip
+*.tar
+*.tgz
+
+# Python artifacts if you use scripts or roles
+__pycache__/
+*.pyc

@@ -1,0 +1,18 @@
+- name: Include SSH setup
+  import_tasks: ssh.yml
+
+- name: Disable swap
+  import_tasks: swap.yml
+
+- name: Configure firewall
+  import_tasks: ufw.yml
+
+- name: Install and configure MicroK8s
+  import_tasks: microk8s.yml
+
+- name: Join MicroK8s cluster
+  import_tasks: join.yml
+
+- name: Enable HA on control-plane nodes
+  import_tasks: ha-cluster.yml
+  when: cluster_join_mode == "control-plane"

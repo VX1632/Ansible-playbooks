@@ -1,0 +1,34 @@
+---
+- name: Distribute WSL public key and verify SSH config
+  hosts: all
+  gather_facts: no
+  become: yes   # We need sudo to check sshd_config or modify files if needed
+
+  vars:
+    ssh_pub_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+  tasks:
+    - name: Add WSL public key to authorized_keys
+      authorized_key:
+        user: vxadmin
+        key: "{{ ssh_pub_key }}"
+        state: present
+        manage_dir: yes
+
+    - name: Check if PasswordAuthentication is explicitly set in sshd_config
+      shell: grep '^PasswordAuthentication' /etc/ssh/sshd_config || echo 'Not set'
+      register: sshd_password_auth
+      changed_when: false
+
+    - name: Show PasswordAuthentication setting
+      debug:
+        var: sshd_password_auth.stdout
+
+    - name: Check if SSH is running
+      shell: systemctl is-active ssh || systemctl is-active sshd
+      register: sshd_status
+      changed_when: false
+
+    - name: Show SSH service status
+      debug:
+        var: sshd_status.stdout

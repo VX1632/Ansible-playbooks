@@ -1,0 +1,27 @@
+# roles/k8s-node/tasks/ha-cluster.yml
+
+- name: Check if HA is already enabled
+  command: microk8s status --format short
+  register: ha_status
+  changed_when: false
+
+- name: Debug current HA status
+  debug:
+    msg: "HA status output: {{ ha_status.stdout }}"
+
+- name: Get number of control-plane nodes
+  shell: >
+    microk8s kubectl get nodes -l node-role.kubernetes.io/control-plane \
+    --no-headers | wc -l
+  register: control_plane_count
+  changed_when: false
+
+- name: Debug number of control-plane nodes
+  debug:
+    msg: "Control-plane node count: {{ control_plane_count.stdout }}"
+
+- name: Enable MicroK8s HA cluster
+  command: microk8s enable ha-cluster
+  when:
+    - "'ha-cluster' not in ha_status.stdout"
+    - control_plane_count.stdout | int >= 3

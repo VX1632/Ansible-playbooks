@@ -1,0 +1,12 @@
+---
+- name: Restart ssh
+  service:
+    name: ssh
+    state: restarted
+  ignore_errors: yes
+
+- name: Restart sshd (if ssh service isn't found)
+  service:
+    name: sshd
+    state: restarted
+  when: ansible_facts.services['ssh'].state is not defined

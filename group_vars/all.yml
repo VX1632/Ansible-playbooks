@@ -1,0 +1,12 @@
+# group_vars/all.yml
+
+# SSH hardening settings
+ssh_port: 55682
+
+# Kubernetes cluster join variables
+cluster_master_ip: "10.10.50.10"
+cluster_join_token: "5962e1a97aba9d71c3224d4a830848ab"
+cluster_cert_hash: "b8ba3716c130b7e93a704f2a25525db8391a5519504e323a0605bcab24af128e"
+
+# Default role for joining node (can override per host in inventory)
+cluster_join_mode: "worker"

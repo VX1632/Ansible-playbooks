@@ -1,0 +1,30 @@
+# roles/k8s-node/tasks/join.yml
+
+- name: Validate cluster_join_mode
+  fail:
+    msg: "cluster_join_mode must be 'worker' or 'control-plane'"
+  when: cluster_join_mode is not in ['worker', 'control-plane']
+
+- name: Debug join mode for this node
+  debug:
+    msg: "Joining as a {{ cluster_join_mode }} node"
+
+- name: Check if this node has already joined the cluster
+  shell: microk8s kubectl get nodes --no-headers
+  register: joined_nodes
+  failed_when: false
+  changed_when: false
+
+- name: Determine if this node is already joined
+  set_fact:
+    already_joined: "{{ ansible_hostname in joined_nodes.stdout }}"
+  when: joined_nodes.stdout is defined
+
+- name: Join MicroK8s cluster with appropriate role
+  shell: >
+    microk8s join {{ cluster_master_ip }}:25000/{{ cluster_join_token }}/{{ cluster_cert_hash }}
+    {% if cluster_join_mode == 'worker' %}--worker{% endif %}
+  when:
+    - not already_joined
+    - cluster_join_token is defined
+    - cluster_cert_hash is defined

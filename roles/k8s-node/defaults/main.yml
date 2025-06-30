@@ -1,0 +1,13 @@
+ssh_hardening_rules:
+  - regexp: '^#?PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+  - regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  - regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin no'
+  - regexp: '^#?AllowUsers'
+    line: 'AllowUsers vxadmin'
+  - regexp: '^#?MaxAuthTries'
+    line: 'MaxAuthTries 3'
+  - regexp: '^#?MaxSessions'
+    line: 'MaxSessions 2'

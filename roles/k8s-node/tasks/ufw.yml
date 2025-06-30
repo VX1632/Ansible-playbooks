@@ -1,0 +1,12 @@
+# roles/k8s-node/tasks/ufw.yml
+
+- name: Allow custom SSH port
+  ufw:
+    rule: allow
+    port: "{{ ssh_port }}"
+    proto: tcp
+
+- name: Enable UFW with deny by default
+  ufw:
+    state: enabled
+    policy: deny

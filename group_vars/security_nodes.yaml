@@ -1,0 +1,29 @@
+packages:
+  # Red team & IDS
+  - snort
+  - suricata
+  - sqlite
+  - tcpdump
+  - nmap
+  - fail2ban
+
+  # Blue team
+  - osquery
+  - auditd
+  - chkrootkit
+  - rkhunter
+  - clamav
+  - glances
+  - htop
+  - ufw
+
+services:
+  - ids
+  - firewall
+  - monitoring
+  - audit
+  - malware_scanner
+
+notes: >
+  k8s-loki is the security node.
+  It includes IDS/IPS, red team tools, and blue team observability agents.
