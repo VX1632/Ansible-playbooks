@@ -3,11 +3,14 @@
 *.secret.yml
 *.enc
 *.key
+vault.yml
 
 # SSH keys
 *.pem
 *.key
 .ssh/
+github_wsl_ansible_skidbladnir
+github_wsl_ansible_skidbladnir.pub
 
 # Inventory files you want private
 inventory/*.ini

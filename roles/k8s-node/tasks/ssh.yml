@@ -1,8 +1,9 @@
 - name: Harden SSH
+  become: yes
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-    state: present
+    insertafter: EOF
   loop: "{{ ssh_hardening_rules }}"
   notify: Restart ssh
