@@ -1,0 +1,45 @@
+- name: Join control plane - Thor
+  hosts: k8s-thor
+  serial: 1
+  tasks:
+    - name: Get join token from Odin
+      delegate_to: k8s-odin
+      command: microk8s add-node --control-plane
+      register: join_info
+
+    - name: Extract join command
+      set_fact:
+        join_command: "{{ join_info.stdout_lines | select('search', 'microk8s join') | list | first }}"
+
+    - name: Run join command on Thor
+      command: "{{ join_command }}"
+      retries: 5
+      delay: 10
+      until: join_command_result.rc == 0
+      register: join_command_result
+
+    - name: Wait for Thor to be ready
+      command: microk8s status --wait-ready
+
+- name: Join control plane - Sindri
+  hosts: k8s-sindri
+  serial: 1
+  tasks:
+    - name: Get join token from Odin
+      delegate_to: k8s-sindri
+      command: microk8s add-node --control-plane
+      register: join_info
+
+    - name: Extract join command
+      set_fact:
+        join_command: "{{ join_info.stdout_lines | select('search', 'microk8s join') | list | first }}"
+
+    - name: Run join command on Sindri
+      command: "{{ join_command }}"
+      retries: 5
+      delay: 10
+      until: join_command_result.rc == 0
+      register: join_command_result
+
+    - name: Wait for Sindri to be ready
+      command: microk8s status --wait-ready
