@@ -1,0 +1,9 @@
+- name: Verify HA cluster is enabled
+  hosts: k8s-odin
+  tasks:
+    - name: Check HA status
+      command: microk8s status
+      register: status_out
+      until: status_out.stdout is search("HA: enabled")
+      retries: 10
+      delay: 5

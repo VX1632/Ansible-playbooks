@@ -1,0 +1,3 @@
+- import_playbook: join_control_plane.yml
+- import_playbook: enable_ha.yml
+- import_playbook: join_workers.yml
