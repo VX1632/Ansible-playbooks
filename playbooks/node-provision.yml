@@ -1,8 +1,0 @@
-- import_playbook: bootstrap.yml
-  tags: bootstrap
-
-- import_playbook: distribute-pubkey.yml
-  tags: pubkey
-
-- import_playbook: node-health.yml
-  tags: health

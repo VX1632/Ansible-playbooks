@@ -1,100 +1,43 @@
+# inventory.yaml
 all:
-  hosts:
-    k8s-odin:
-      ansible_host: 10.10.50.10
-      ansible_port: 55682
-      cluster_join_mode: "control-plane"
-    k8s-thor:
-      ansible_host: 10.10.50.11
-      ansible_port: 55682
-      cluster_join_mode: "control-plane"
-    k8s-sindri:
-      ansible_host: 10.10.50.13
-      ansible_port: 55682
-      cluster_join_mode: "control-plane"
-    k8s-vioarr:
-      ansible_host: 10.10.50.115
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-    k8s-mimir:
-      ansible_host: 10.10.50.12
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-    k8s-loki:
-      ansible_host: 10.10.50.116
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-    k8s-runkista:
-      ansible_host: 10.10.50.14
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-    k8s-odrerir:
-      ansible_host: 10.10.50.40
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-    k8s-gjallarhorn:
-      ansible_host: 10.10.50.117
-      ansible_port: 55682
-      cluster_join_mode: "worker"
-
-
   children:
-    control_plane:
+    control_planes:
       hosts:
         k8s-odin:
+          ansible_host: 10.10.50.10
+          ansible_port: 55682
+          cluster_join_mode: control-plane
         k8s-thor:
+          ansible_host: 10.10.50.11
+          ansible_port: 55682
+          cluster_join_mode: control-plane
         k8s-sindri:
-
+          ansible_host: 10.10.50.13
+          ansible_port: 55682
+          cluster_join_mode: control-plane
     workers:
       hosts:
         k8s-vioarr:
+          ansible_host: 10.10.50.115
+          ansible_port: 55682
+          cluster_join_mode: worker
         k8s-mimir:
+          ansible_host: 10.10.50.12
+          ansible_port: 55682
+          cluster_join_mode: worker
         k8s-loki:
+          ansible_host: 10.10.50.116
+          ansible_port: 55682
+          cluster_join_mode: worker
         k8s-runkista:
+          ansible_host: 10.10.50.14
+          ansible_port: 55682
+          cluster_join_mode: worker
         k8s-odrerir:
+          ansible_host: 10.10.50.40
+          ansible_port: 55682
+          cluster_join_mode: worker
         k8s-gjallarhorn:
-
-    storage_nodes:
-      hosts:
-        k8s-odin:
-        k8s-vioarr:
-        k8s-runkista:
-
-    pi_nodes:
-      hosts:
-        k8s-vioarr:
-        k8s-mimir:
-        k8s-loki:
-        k8s-runkista:
-        k8s-odrerir:
-
-    heavy_lift_nodes:
-      hosts:
-        k8s-odin:
-        k8s-thor:
-
-    security_nodes:
-      hosts:
-        k8s-loki:
-
-    dev_nodes:
-      hosts:
-        k8s-sindri:
-
-    ai_nodes:
-      hosts:
-        k8s-odin:
-        k8s-sindri:
-
-    database_nodes:
-      hosts:
-        k8s-mimir:
-
-    media_nodes:
-      hosts:
-        k8s-runkista:
-
-    infrastructure_nodes:
-      hosts:
-        k8s-odin:
-        k8s-vioarr:
+          ansible_host: 10.10.50.117
+          ansible_port: 55682
+          cluster_join_mode: worker

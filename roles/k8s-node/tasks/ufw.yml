@@ -1,36 +1,23 @@
-# roles/k8s-node/tasks/ufw.yml
+---
+# Placeholder UFW rules (deferred until post-bootstrap)
 
-- name: Allow custom SSH port
-  ufw:
-    rule: allow
-    port: "{{ ssh_port }}"
-    proto: tcp
+- name: Ensure UFW is installed
+  ansible.builtin.package:
+    name: ufw
+    state: present
 
-- name: Allow MicroK8s cluster agent
-  ufw:
-    rule: allow
-    port: 25000
-    proto: tcp
+- name: Disable UFW before configuration
+  ansible.builtin.command: ufw disable
+  become: true
+  ignore_errors: true
 
-- name: Allow MicroK8s dqlite
-  ufw:
-    rule: allow
-    port: 19001
-    proto: tcp
+- name: Allow internal node communication (placeholder)
+  ansible.builtin.command: ufw allow from 10.10.50.0/24
+  become: true
+  ignore_errors: true
 
-- name: Allow MicroK8s kubelet
-  ufw:
-    rule: allow
-    port: 10250
-    proto: tcp
-
-- name: Allow Calico VXLAN (if using Calico overlay)
-  ufw:
-    rule: allow
-    port: 4789
-    proto: udp
-
-- name: Enable UFW with deny by default
-  ufw:
-    state: enabled
-    policy: deny
+- name: Enable UFW after configuration (optional)
+  ansible.builtin.command: ufw enable
+  become: true
+  ignore_errors: true
+  when: enable_ufw | default(false)

@@ -1,0 +1,34 @@
+# Managed by Ansible: sshd_config hardened and synchronized
+# -----------------------------------------------------------------
+# PORT CONFIGURATION
+Port 55682  # Custom SSH port for all cluster nodes
+
+# CONNECTION CONTROL
+LoginGraceTime 30m     # Ample time for initial authentication
+PermitRootLogin no     # Root login disabled for security
+PermitEmptyPasswords no
+MaxAuthTries 3         # Limit brute force attempts
+MaxSessions 3          # Restrict session abuse
+
+# AUTHENTICATION MODE SWITCH
+# This block toggles authentication methods based on whether the public key
+# has already been deployed to /home/vxadmin/.ssh/authorized_keys.
+# When pubkey is present, enforce it. Otherwise allow password for initial setup.
+{% if pubkey_auth_enforced %}
+PubkeyAuthentication yes
+PasswordAuthentication no
+{% else %}
+PubkeyAuthentication no
+PasswordAuthentication yes
+{% endif %}
+
+# INTERACTION & ACCESS
+KbdInteractiveAuthentication no
+UsePAM yes
+AllowUsers vxadmin      # Only allow our management user
+X11Forwarding yes       # Optional for debug sessions
+PrintMotd no
+
+# ENVIRONMENT AND SFTP
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server

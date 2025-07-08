@@ -1,13 +1,15 @@
-ssh_hardening_rules:
-  - regexp: '^#?PubkeyAuthentication'
-    line: 'PubkeyAuthentication yes'
-  - regexp: '^#?PasswordAuthentication'
-    line: 'PasswordAuthentication no'
-  - regexp: '^#?PermitRootLogin'
-    line: 'PermitRootLogin no'
-  - regexp: '^#?AllowUsers'
-    line: 'AllowUsers vxadmin'
-  - regexp: '^#?MaxAuthTries'
-    line: 'MaxAuthTries 3'
-  - regexp: '^#?MaxSessions'
-    line: 'MaxSessions 2'
+---
+# Default values used across all k8s-node role executions
+
+microk8s_channel: "1.32/stable"
+microk8s_classic: true
+microk8s_addons:
+  - dns
+  - helm
+  - helm3
+  - ha-cluster
+  # Add more as needed
+
+swap_enabled: false
+configure_ssh: true
+disable_hostpath_storage: true

@@ -1,9 +1,22 @@
-- name: Verify HA cluster is enabled
-  hosts: k8s-odin
+---
+- name: Enable HA Mode on MicroK8s Control Plane
+  hosts: control_planes
+  become: true
+  gather_facts: false
+  serial: 1  # Join one node at a time
+
   tasks:
-    - name: Check HA status
-      command: microk8s status
-      register: status_out
-      until: status_out.stdout is search("HA: enabled")
-      retries: 10
-      delay: 5
+    - name: Count available control-plane nodes in cluster
+      delegate_to: k8s-odin
+      command: microk8s kubectl get nodes -o name
+      register: node_names_raw
+      changed_when: false
+
+    # Extract just the count
+    - name: Set control plane count fact
+      set_fact:
+        control_plane_count: "{{ node_names_raw.stdout_lines | select('search', 'k8s-') | list | length }}"
+
+    - name: Enable HA if quorum (3+) control planes exist
+      command: microk8s enable ha-cluster
+      when: control_plane_count | int >= 3

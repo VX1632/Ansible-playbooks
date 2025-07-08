@@ -1,12 +1,12 @@
 ---
-- name: Restart ssh
+# Handlers triggered during node setup
+
+- name: Restart sshd
   service:
     name: ssh
     state: restarted
-  ignore_errors: yes
 
-- name: Restart sshd (if ssh service isn't found)
-  service:
-    name: sshd
-    state: restarted
-  when: ansible_facts.services['ssh'].state is not defined
+- name: Reboot if Required
+  reboot:
+    reboot_timeout: 300
+

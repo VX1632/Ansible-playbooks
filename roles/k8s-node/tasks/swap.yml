@@ -1,11 +1,13 @@
-# roles/k8s-node/tasks/swap.yml
-- name: Disable swap immediately
-  command: swapoff -a
+---
+# Disables swap which is required for Kubernetes
+
+- name: Disable swap in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*swap.*)$'
+    replace: '# \1'
   become: true
 
-- name: Comment out swap line in /etc/fstab
-  replace:
-    path: /etc/fstab
-    regexp: '^([^#].* swap .*)$'
-    replace: '# \1'
+- name: Turn off swap immediately
+  ansible.builtin.command: swapoff -a
   become: true

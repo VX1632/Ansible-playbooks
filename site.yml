@@ -1,0 +1,61 @@
+---
+- name: Node Provisioning Phase
+  hosts: all
+  become: true
+  tags: [provision, ssh, setup]
+  roles:
+    - role: k8s-node
+      tags: [node, provision]
+
+- name: SSH Configuration (safe post-provision)
+  hosts: all
+  become: true
+  tags: [ssh]
+  tasks:
+    - import_tasks: roles/k8s-node/tasks/ssh.yml
+      tags: [ssh]
+
+- name: Distribute SSH Public Key
+  hosts: all
+  become: true
+  tags: [pubkey]
+  tasks:
+    - import_playbook: playbooks/distribute-pubkey.yml
+
+- name: Node Health Verification
+  hosts: all
+  become: true
+  tags: [node_health]
+  tasks:
+    - import_tasks: roles/k8s-node/tasks/swap.yml
+    - import_tasks: roles/k8s-node/tasks/ufw.yml
+
+- name: Control Plane Join
+  hosts: control_planes
+  serial: 1
+  become: true
+  tags: [join_control_plane]
+  tasks:
+    - import_playbook: playbooks/join_control_plane.yml
+
+- name: Worker Node Join
+  hosts: workers
+  serial: 1
+  become: true
+  tags: [join_workers]
+  tasks:
+    - import_playbook: playbooks/join_workers.yml
+
+- name: Enable HA Cluster Mode (after join)
+  hosts: control_planes[0]
+  become: true
+  tags: [enable_ha]
+  tasks:
+    - import_playbook: playbooks/enable_ha.yml
+
+- name: Cluster Health Check
+  hosts: control_planes[0]
+  become: true
+  tags: [cluster_health]
+  tasks:
+    - import_playbook: playbooks/cluster_bootstrap.yml

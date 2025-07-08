@@ -1,0 +1,21 @@
+# playbooks/node_health.yml
+
+- name: Node Health Checks
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Run swap checks and disables
+      import_tasks: ../roles/k8s-node/tasks/swap.yml
+      tags:
+        - swap
+
+    - name: Run HA configuration checks
+      import_tasks: ../roles/k8s-node/tasks/ha-cluster.yml
+      tags:
+        - ha
+
+    - name: Run optional UFW checks (currently inactive)
+      import_tasks: ../roles/k8s-node/tasks/ufw.yml
+      tags:
+        - ufw

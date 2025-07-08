@@ -1,6 +1,0 @@
-# playbooks/gjallarhorn.yml
-- name: Setup k8s-gjallarhorn
-  hosts: gjallarhorn
-  become: yes
-  roles:
-    - k8s-node

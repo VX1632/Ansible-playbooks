@@ -1,4 +1,4 @@
-# group_vars/workers.yml
-
-cluster_join_mode: "worker"
-microk8s_token_ttl: 3600
+---
+# Labels or setup specific to worker nodes
+node_labels:
+  role.worker: "true"

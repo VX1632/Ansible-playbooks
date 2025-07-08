@@ -1,0 +1,22 @@
+---
+- name: Cluster-Wide Health Validation
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Run general node health tasks
+      import_tasks: ../roles/k8s-node/tasks/node_health.yml
+      tags:
+        - node
+        - health
+
+    - name: Run HA cluster checks
+      import_tasks: ../roles/k8s-node/tasks/ha_cluster.yml
+      tags:
+        - ha
+        - cluster
+
+    - name: Run optional firewall checks (disabled by default)
+      import_tasks: ../roles/k8s-node/tasks/ufw.yml
+      tags:
+        - ufw

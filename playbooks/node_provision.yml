@@ -1,0 +1,17 @@
+# playbooks/node_provision.yml
+
+- name: Node Provisioning and Hardening
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Include base MicroK8s setup
+      import_role:
+        name: k8s-node
+      tags:
+        - microk8s
+
+    - name: Run SSH hardening
+      import_tasks: ../roles/k8s-node/tasks/ssh.yml
+      tags:
+        - ssh

@@ -1,12 +1,12 @@
 ---
-- name: Join Worker Nodes to MicroK8s Cluster
-  hosts: workers
+- name: Join Control Plane Nodes to MicroK8s Cluster
+  hosts: control_planes
   become: true
   gather_facts: false
-  serial: 1  # Safe join; avoids token reuse collisions
+  serial: 1  # Ensure join happens one at a time to avoid token conflicts
 
   vars:
-    primary_control_node: k8s-odin
+    primary_control_node: k8s-odin  # Token will always be generated here
 
   tasks:
     - name: Check if {{ inventory_hostname }} is already part of the cluster
@@ -19,18 +19,18 @@
       set_fact:
         should_join: "{{ (cluster_nodes.stdout | default('')) is not search(inventory_hostname) }}"
 
-    - name: Get worker join token from {{ primary_control_node }}
+    - name: Get join token from {{ primary_control_node }}
       delegate_to: "{{ primary_control_node }}"
-      command: microk8s add-node --worker
+      command: microk8s add-node --control-plane
       register: join_info
       when: should_join
 
-    - name: Extract join command for worker
+    - name: Extract join command from token response
       set_fact:
         join_command: "{{ (join_info.stdout_lines | select('search', 'microk8s join') | list)[0] }}"
       when: should_join
 
-    - name: Run join command on {{ inventory_hostname }}
+    - name: Execute join command on {{ inventory_hostname }}
       command: "{{ join_command }}"
       register: join_command_result
       retries: 5
@@ -38,11 +38,11 @@
       until: join_command_result.rc == 0
       when: should_join
 
-    - name: Wait for worker node to be ready
+    - name: Wait for MicroK8s to report ready
       command: microk8s status --wait-ready
       when: should_join
 
-    - name: Report existing worker status
+    - name: Inform node already part of cluster
       debug:
-        msg: "{{ inventory_hostname }} is already joined. Skipping."
+        msg: "{{ inventory_hostname }} is already in the cluster, skipping join."
       when: not should_join

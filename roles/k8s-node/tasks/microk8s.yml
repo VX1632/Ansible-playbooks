@@ -1,72 +1,23 @@
-# roles/k8s-node/tasks/microk8s.yml
+---
+# Handles installing and preparing MicroK8s
 
-- name: Ensure snapd is installed
-  apt:
-    name: snapd
-    state: present
-    update_cache: yes
-  become: true
-
-- name: Install MicroK8s 1.32 with classic confinement
+- name: Ensure MicroK8s is absent (clean slate)
   ansible.builtin.shell: |
-    snap list microk8s || snap install microk8s --classic --channel=1.32/stable
-  args:
-    executable: /bin/bash
-  become: true
+    sudo microk8s leave || true
+    sudo microk8s reset --destroy-storage || true
+    sudo snap remove microk8s || true
+  ignore_errors: true
 
-- name: Wait for /snap/bin/microk8s to be available
-  wait_for:
-    path: /snap/bin/microk8s
-    state: present
-    timeout: 120
-  become: true
+- name: Install MicroK8s
+  community.general.snap:
+    name: "{{ microk8s_snap_name }}"
+    classic: "{{ microk8s_classic }}"
+    channel: "{{ microk8s_channel }}"
 
-- name: Wait up to 60 seconds for microk8s group to be created
-  wait_for:
-    path: /etc/group
-    search_regex: '^microk8s:'
-    delay: 2
-    timeout: 60
-  become: true
+- name: Wait for MicroK8s to be ready
+  ansible.builtin.command: microk8s status --wait-ready
 
-- name: Verify microk8s group exists
-  ansible.builtin.command: getent group microk8s
-  register: microk8s_group_check
-  failed_when: false
-  changed_when: false
-
-- name: Add vxadmin to microk8s group
-  user:
-    name: "{{ ansible_user }}"
-    groups: microk8s
-    append: yes
-  when: microk8s_group_check.rc == 0
-  become: true
-
-- name: Ensure ~/.kube directory exists
-  file:
-    path: /home/{{ ansible_user }}/.kube
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: '0755'
-  become: true
-
-- name: Change permissions for kube config file
-  file:
-    path: /var/snap/microk8s/current/credentials/client.config
-    owner: "{{ ansible_user }}"
-    group: microk8s
-    mode: '0640'
-  become: true
-
-- name: Create .kube config symlink
-  file:
-    src: /var/snap/microk8s/current/credentials/client.config
-    dest: /home/{{ ansible_user }}/.kube/config
-    state: link
-    force: yes
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: '0644'
-  become: true
+- name: Disable hostpath-storage if needed
+  ansible.builtin.command: microk8s disable hostpath-storage
+  when: disable_hostpath_storage
+  ignore_errors: true

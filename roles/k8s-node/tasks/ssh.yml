@@ -1,9 +1,26 @@
-- name: Harden SSH
-  become: yes
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    insertafter: EOF
-  loop: "{{ ssh_hardening_rules }}"
-  notify: Restart ssh
+# roles/k8s-node/tasks/ssh.yml
+
+- name: Check if SSH public key exists for vxadmin
+  stat:
+    path: /home/vxadmin/.ssh/authorized_keys
+  register: pubkey_file
+
+- name: Set pubkey authentication enforcement fact
+  set_fact:
+    pubkey_auth_enforced: "{{ pubkey_file.stat.exists and pubkey_file.stat.size > 0 }}"
+
+- name: Deploy hardened sshd_config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Restart sshd
+  when: pubkey_auth_enforced  # only locks after key is present
+
+- name: Ensure ssh is enabled and restarted
+  systemd:
+    name: ssh
+    enabled: true
+    state: restarted

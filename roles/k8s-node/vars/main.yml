@@ -1,8 +1,5 @@
-ssh_hardening_rules:
-  - { regexp: '^#?Port ', line: 'Port 55682' }
-  - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin no' }
-  - { regexp: '^#?PubkeyAuthentication', line: 'PubkeyAuthentication no' }
-  - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication yes' }
-  - { regexp: '^#?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
-  - { regexp: '^#?MaxAuthTries', line: 'MaxAuthTries 3' }
-  - { regexp: '^#?MaxSessions', line: 'MaxSessions 2' }
+---
+# Static variables (hard-coded)
+
+microk8s_snap_name: "microk8s"
+ssh_config_file: "/etc/ssh/sshd_config"

@@ -1,0 +1,22 @@
+---
+# Basic node-level hardening tasks
+
+- name: Ensure swap is disabled (runtime)
+  command: swapoff -a
+
+- name: Ensure swap is removed from /etc/fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s)'
+    replace: '# \1'
+  notify: Reboot if Required
+
+- name: Confirm swap is off
+  command: swapon --summary
+  register: swap_status
+  changed_when: false
+
+- name: Warn if swap still appears enabled
+  debug:
+    msg: "Warning: swap still detected!"
+  when: swap_status.stdout != ''

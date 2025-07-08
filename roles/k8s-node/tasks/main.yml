@@ -1,18 +1,20 @@
-- name: Include SSH setup
-  import_tasks: ssh.yml
+---
+# Entrypoint for all k8s-node tasks
 
-- name: Disable swap
-  import_tasks: swap.yml
+- name: Include MicroK8s installation
+  ansible.builtin.import_tasks: microk8s.yml
 
-- name: Configure firewall
-  import_tasks: ufw.yml
+- name: Configure SSH if enabled
+  ansible.builtin.import_tasks: ssh.yml
+  when: configure_ssh
 
-- name: Install and configure MicroK8s
-  import_tasks: microk8s.yml
+- name: Configure swap state
+  ansible.builtin.import_tasks: swap.yml
+  when: not swap_enabled
 
-- name: Join MicroK8s cluster
-  import_tasks: join.yml
+# Cluster health checks
+- name: Include cluster HA setup
+  ansible.builtin.import_tasks: ha-cluster.yml
 
-- name: Enable HA on control-plane nodes
-  import_tasks: ha-cluster.yml
-  when: cluster_join_mode == "control-plane"
+- name: Include UFW configuration
+  ansible.builtin.import_tasks: ufw.yml

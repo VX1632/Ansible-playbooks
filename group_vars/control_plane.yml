@@ -1,3 +1,6 @@
-# group_vars/control_plane.yml
-
-cluster_join_mode: "control-plane"
+---
+# Labels for HA control plane nodes
+node_labels:
+  role.control-plane: "true"
+  role.general: "true"
+  role.storage: "true"
