@@ -40,3 +40,14 @@ __pycache__/
 *.tmp
 .env
 .venv/
+
+# Ignore actual SSH pubkey distribution file
+roles/k8s-node/tasks/distribute_pubkey.yml
+
+# SSH keypair safety
+github_wsl_ansible_skidbladnir
+github_wsl_ansible_skidbladnir.pub
+id_ansible_skidbladnir
+id_ansible_skidbladnir.pub
+*.pem
+*.key
