@@ -1,0 +1,43 @@
+# inventory.yaml
+all:
+  children:
+    control_planes:
+      hosts:
+        k8s-master1:
+          ansible_host: 10.10.10.10
+          ansible_port: 57575
+          cluster_join_mode: control-plane
+        k8s-master2:
+          ansible_host: 10.10.10.11
+          ansible_port: 57575
+          cluster_join_mode: control-plane
+        k8s-master3:
+          ansible_host: 10.10.10.12
+          ansible_port: 57575
+          cluster_join_mode: control-plane
+    workers:
+      hosts:
+        k8s-worker1:
+          ansible_host: 10.10.10.21
+          ansible_port: 57575
+          cluster_join_mode: worker
+        k8s-worker2:
+          ansible_host: 10.10.10.22
+          ansible_port: 57575
+          cluster_join_mode: worker
+        k8s-worker3:
+          ansible_host: 10.10.10.23
+          ansible_port: 57575
+          cluster_join_mode: worker
+        k8s-worker4:
+          ansible_host: 10.10.10.24
+          ansible_port: 57575
+          cluster_join_mode: worker
+        k8s-worker5:
+          ansible_host: 10.10.10.25
+          ansible_port: 57575
+          cluster_join_mode: worker
+        k8s-worker6:
+          ansible_host: 10.10.10.26
+          ansible_port: 57575
+          cluster_join_mode: worker

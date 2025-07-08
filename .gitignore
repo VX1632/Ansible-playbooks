@@ -1,35 +1,42 @@
-# Ansible vault files or secrets
-*.vault.yml
-*.secret.yml
-*.enc
-*.key
-vault.yml
+# === Inventories & Config ===
+inventory.yaml
+ansible.cfg
 
-# SSH keys
+# === Group Vars / Host Vars / Vaults ===
+group_vars/all.yaml
+group_vars/security_nodes.yaml
+group_vars/ufw.yml
+group_vars/all.vault.yaml
+host_vars/
+vault/
+
+# === Playbooks With Sensitive Logic ===
+playbooks/ufw.yml
+playbooks/security_nodes.yaml
+
+# === Templates With Sensitive Defaults ===
+templates/sshd_config.j2
+
+# === SSH Keys or Secrets ===
+*.key
 *.pem
-*.key
-.ssh/
-github_wsl_ansible_skidbladnir
-github_wsl_ansible_skidbladnir.pub
+*.crt
+*.pub
+*.enc
+*.vault.*
+vault_pass.txt
+*.secret
 
-# Inventory files you want private
-inventory/*.ini
-inventory/*.yaml
-inventory/*.yml
-
-# Logs / temporary files
-*.log
-*.retry
-*.tmp
-*.bak
-*.swp
-
-# Other common ignores
-*.tar.gz
-*.zip
-*.tar
-*.tgz
-
-# Python artifacts if you use scripts or roles
+# === Python / Ansible Runtime ===
 __pycache__/
-*.pyc
+*.py[cod]
+*.retry
+
+# === OS/Editor Noise ===
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp
+.env
+.venv/
