@@ -6,6 +6,30 @@
     port: "{{ ssh_port }}"
     proto: tcp
 
+- name: Allow MicroK8s cluster agent
+  ufw:
+    rule: allow
+    port: 25000
+    proto: tcp
+
+- name: Allow MicroK8s dqlite
+  ufw:
+    rule: allow
+    port: 19001
+    proto: tcp
+
+- name: Allow MicroK8s kubelet
+  ufw:
+    rule: allow
+    port: 10250
+    proto: tcp
+
+- name: Allow Calico VXLAN (if using Calico overlay)
+  ufw:
+    rule: allow
+    port: 4789
+    proto: udp
+
 - name: Enable UFW with deny by default
   ufw:
     state: enabled

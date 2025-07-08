@@ -1,0 +1,7 @@
+- import_playbook: bootstrap.yml
+- import_playbook: distribute-pubkey.yml
+- import_playbook: node-provision.yml
+- import_playbook: join_control_plane.yml
+- import_playbook: join_workers.yml
+- import_playbook: enable_ha.yml
+- import_playbook: node-health.yml

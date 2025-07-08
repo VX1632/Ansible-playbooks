@@ -1,3 +1,4 @@
+---
 # roles/k8s-node/tasks/join.yml
 
 - name: Validate cluster_join_mode
@@ -20,11 +21,55 @@
     already_joined: "{{ ansible_hostname in joined_nodes.stdout }}"
   when: joined_nodes.stdout is defined
 
-- name: Join MicroK8s cluster with appropriate role
-  shell: >
-    microk8s join {{ cluster_master_ip }}:25000/{{ cluster_join_token }}/{{ cluster_cert_hash }}
-    {% if cluster_join_mode == 'worker' %}--worker{% endif %}
+# --- DYNAMIC TOKEN GENERATION ---
+
+- name: Generate join command for this node on Odin if token is not provided
+  command: microk8s add-node
+  delegate_to: odin
+  register: add_node_result
+  when:
+    - not already_joined
+    - cluster_join_token is not defined
+
+- name: Extract join command for this node if token is not provided
+  set_fact:
+    join_command: "{{ add_node_result.stdout_lines | select('search', '^microk8s join') | list | first }}"
+  when:
+    - not already_joined
+    - cluster_join_token is not defined
+
+# --- STATIC TOKEN CONSTRUCTION ---
+
+- name: Construct join command from provided token
+  set_fact:
+    join_command: >
+      microk8s join {{ cluster_master_ip }}:25000/{{ cluster_join_token }}/{{ cluster_cert_hash }}
+      {% if cluster_join_mode == 'worker' %} --worker{% endif %}
   when:
     - not already_joined
     - cluster_join_token is defined
     - cluster_cert_hash is defined
+    - cluster_master_ip is defined
+
+# --- APPEND FLAGS TO DYNAMIC TOKEN ---
+
+- name: Append --worker if this is a worker node (dynamic token case)
+  set_fact:
+    join_command: "{{ join_command }} --worker"
+  when:
+    - not already_joined
+    - cluster_join_token is not defined
+    - cluster_join_mode == 'worker'
+
+- name: Append --skip-verify if specified
+  set_fact:
+    join_command: "{{ join_command }} --skip-verify"
+  when:
+    - not already_joined
+    - skip_verify | default(false)
+
+# --- EXECUTE JOIN ---
+
+- name: Execute join command on this node
+  command: "{{ join_command }}"
+  when: not already_joined

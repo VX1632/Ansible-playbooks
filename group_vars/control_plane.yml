@@ -1,0 +1,3 @@
+# group_vars/control_plane.yml
+
+cluster_join_mode: "control-plane"

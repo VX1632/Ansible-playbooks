@@ -45,6 +45,15 @@ all:
         k8s-thor:
         k8s-sindri:
 
+    workers:
+      hosts:
+        k8s-vioarr:
+        k8s-mimir:
+        k8s-loki:
+        k8s-runkista:
+        k8s-odrerir:
+        k8s-gjallarhorn:
+
     storage_nodes:
       hosts:
         k8s-odin:

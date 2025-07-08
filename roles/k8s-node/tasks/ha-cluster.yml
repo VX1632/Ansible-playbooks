@@ -1,5 +1,4 @@
-# roles/k8s-node/tasks/ha-cluster.yml
-
+---
 - name: Check if HA is already enabled
   command: microk8s status --format short
   register: ha_status
@@ -23,5 +22,13 @@
 - name: Enable MicroK8s HA cluster
   command: microk8s enable ha-cluster
   when:
-    - "'ha-cluster' not in ha_status.stdout"
+    - "'ha-cluster' not in ha_status.stdout | replace('\n', ' ')"
     - control_plane_count.stdout | int >= 3
+
+- name: Debug skip reason if HA not enabled
+  debug:
+    msg: "Skipping ha-cluster enable because HA is already enabled or quorum not met"
+  when: >
+    'ha-cluster' in ha_status.stdout | replace('\n', ' ')
+    or
+    control_plane_count.stdout | int < 3

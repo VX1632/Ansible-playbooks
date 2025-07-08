@@ -4,5 +4,8 @@
   become: true
   gather_facts: yes
 
+  vars_files:
+    - vault.yml
+
   roles:
     - k8s-node

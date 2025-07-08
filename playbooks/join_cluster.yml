@@ -1,0 +1,8 @@
+---
+- name: Join MicroK8s cluster
+  hosts: all
+  gather_facts: no
+  become: yes
+
+  roles:
+    - microk8s-node
