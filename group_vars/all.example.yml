@@ -1,0 +1,12 @@
+---
+ansible_user: user
+ansible_become: true
+ansible_ssh_port: 57575
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+# Public key path for distribution
+pubkey_path: github_ansible.pub
+
+# MicroK8s install settings
+microk8s_channel: "1.32/stable"
+microk8s_classic: true
