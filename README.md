@@ -1,4 +1,4 @@
-# 🚀 Skidbladnir: Ansible-Based Kubernetes Cluster Deployment
+# Skidbladnir: Ansible-Based Kubernetes Cluster Deployment
 
 This project automates the provisioning and configuration of a secure, self-hosted, high-availability Kubernetes cluster using MicroK8s and Ansible. It’s designed for hybrid hardware (ARM + x86_64) including Raspberry Pi 5s and heavier nodes for AI/ML and storage. I separated this repo so it would be easier to focus on Ansible Playbooks.
 
@@ -6,7 +6,7 @@ This project automates the provisioning and configuration of a secure, self-host
 
 ---
 
-## 📁 Directory Structure
+## Directory Structure
 
 ansible-skidbladnir/
 ├── ansible.cfg
@@ -28,7 +28,7 @@ ansible-skidbladnir/
 
 ---
 
-## 🔧 Features
+## Features
 
 - Dynamic cluster joining with role-based logic
 - High-availability MicroK8s setup with 3+ control-plane nodes
@@ -39,7 +39,7 @@ ansible-skidbladnir/
 
 ---
 
-## 📌 SSH Configuration Note
+## SSH Configuration Note
 
 > The default SSH port is set to **57575** in this project — it's arbitrary but easy to remember.
 >
@@ -47,7 +47,7 @@ ansible-skidbladnir/
 
 ---
 
-## 🖥️ Node Roles (Example)
+## Node Roles (Example)
 
 - `k8s-master1`, `k8s-master2`, `k8s-master3` → Control-plane nodes
 - `k8s-worker1`, `k8s-worker2`, `k8s-worker3` → Worker nodes (AI, media, storage roles)
@@ -55,7 +55,7 @@ ansible-skidbladnir/
 
 ---
 
-## 🛠️ Playbooks Workflow
+## Playbooks Workflow
 
 ```bash
 # 1. Distribute SSH public keys
@@ -80,7 +80,7 @@ ansible-playbook -i inventory.yaml playbooks/enable_ha.yml
 ansible-playbook -i inventory.yaml playbooks/cluster_health.yml
 ansible-playbook -i inventory.yaml playbooks/node_health.yml
 
-## 📬 Feedback & Contributions
+## Feedback & Contributions
 
 This project is part of a learning journey in building resilient, automated clusters. Feedback, PRs, or forks are welcome!
 
